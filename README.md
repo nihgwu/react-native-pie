@@ -1,6 +1,6 @@
 # react-native-pie
 
-Pie chart for React Native
+Pie chart for React Native, works on **iOS** and **Android** both
 
 ## Demo
 
