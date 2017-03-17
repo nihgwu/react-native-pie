@@ -21,7 +21,7 @@ import {
   View,
   Text,
 } from 'react-native'
-import Pie from 'react-native-doughnut'
+import Pie from 'react-native-pie'
 
 export default class PieDemo extends Component {
   render() {
