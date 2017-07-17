@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { ART } from 'react-native'
+import { ART, Platform } from 'react-native'
 
 const { Surface, Shape, Path, Group } = ART
 
@@ -9,6 +9,25 @@ function createPath(cx, cy, r, startAngle, arcAngle) {
   p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1)
   return p
 }
+
+const ArcShape = ({ radius, width, color, startAngle, arcAngle }) => {
+  const path = createPath(
+    radius,
+    radius,
+    radius - width / 2,
+    startAngle / 180 * Math.PI,
+    arcAngle / 180 * Math.PI
+  )
+  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap="butt" />
+}
+
+const RingShape = props =>
+  Platform.OS === 'ios'
+    ? <ArcShape {...props} startAngle={0} arcAngle={360} />
+    : <Group>
+        <ArcShape {...props} startAngle={0} arcAngle={180} />
+        <ArcShape {...props} startAngle={180} arcAngle={180} />
+      </Group>
 
 const Pie = ({ series, colors, radius, innerRadius, backgroundColor }) => {
   const width = radius - innerRadius
@@ -22,26 +41,28 @@ const Pie = ({ series, colors, radius, innerRadius, backgroundColor }) => {
           stroke={backgroundColor}
           strokeWidth={width}
         />
+        <RingShape radius={radius} width={width} color={backgroundColor} />
         {series.map((item, idx) => {
-          const startAngle = startValue / 100 * 2 * Math.PI
-          const arcAngle = item / 100 * 2 * Math.PI
+          const startAngle = startValue / 100 * 360
+          const arcAngle = item / 100 * 360
           startValue += item
-          const path = createPath(
-            radius,
-            radius,
-            radius - width / 2,
-            startAngle,
-            arcAngle
-          )
-          return (
-            <Shape
-              key={`${startAngle}-${arcAngle}`}
-              d={path}
-              stroke={colors[idx]}
-              strokeWidth={width}
-              strokeCap="butt"
-            />
-          )
+          const color = colors[idx]
+          return arcAngle >= 360
+            ? <RingShape
+                key={idx}
+                radius={radius}
+                width={width}
+                color={color}
+              />
+            : <ArcShape
+                key={idx}
+                radius={radius}
+                width={width}
+                color={color}
+                startAngle={startAngle}
+                arcAngle={arcAngle}
+                strokeCap="butt"
+              />
         })}
       </Group>
     </Surface>
