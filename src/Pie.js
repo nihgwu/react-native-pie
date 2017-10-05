@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { ART, Platform } from 'react-native'
 
 const { Surface, Shape, Path, Group } = ART

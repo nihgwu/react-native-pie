@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/nihgwu/react-native-pie/issues"
   },
-  "homepage": "https://github.com/nihgwu/react-native-pie#readme"
+  "homepage": "https://github.com/nihgwu/react-native-pie#readme",
+  "peerDependencies": {
+    "prop-types": "^15.6.0"
+  }
 }
