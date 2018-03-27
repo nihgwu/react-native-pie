@@ -6,8 +6,24 @@ const { Surface, Shape, Path, Group } = ART
 
 function createPath(cx, cy, r, startAngle, arcAngle) {
   const p = new Path()
-  p.path.push(0, cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle))
-  p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1)
+  if (Platform.OS === 'web') {
+    p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle))
+    p.onArc(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      cx,
+      cy,
+      r,
+      r,
+      startAngle,
+      startAngle + arcAngle,
+    )
+  } else {
+    p.path.push(0, cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle))
+    p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1)
+  }
   return p
 }
 
