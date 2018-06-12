@@ -11,7 +11,7 @@ function createPath(cx, cy, r, startAngle, arcAngle) {
   return p
 }
 
-const ArcShape = ({ radius, width, color, startAngle, arcAngle }) => {
+const ArcShape = ({ radius, width, color, strokeCap,startAngle, arcAngle }) => {
   const path = createPath(
     radius,
     radius,
@@ -19,7 +19,7 @@ const ArcShape = ({ radius, width, color, startAngle, arcAngle }) => {
     startAngle / 180 * Math.PI,
     arcAngle / 180 * Math.PI
   )
-  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap="butt" />
+  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap={strokeCap} />
 }
 
 const RingShape = props =>
@@ -30,7 +30,7 @@ const RingShape = props =>
         <ArcShape {...props} startAngle={180} arcAngle={180} />
       </Group>
 
-const Pie = ({ series, colors, radius, innerRadius, backgroundColor }) => {
+const Pie = ({ series, colors, radius, innerRadius, backgroundColor,strokeCap}) => {
   const width = radius - innerRadius
   const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360)
   let startValue = 0
@@ -62,7 +62,7 @@ const Pie = ({ series, colors, radius, innerRadius, backgroundColor }) => {
                 color={color}
                 startAngle={startAngle}
                 arcAngle={arcAngle}
-                strokeCap="butt"
+                strokeCap={strokeCap}
               />
         })}
       </Group>
@@ -78,9 +78,11 @@ Pie.propTypes = {
   radius: PropTypes.number.isRequired,
   innerRadius: PropTypes.number,
   backgroundColor: PropTypes.string,
+  strokeCap: PropTypes.string,
 }
 
 Pie.defaultProps = {
   innerRadius: 0,
   backgroundColor: '#fff',
+  strokeCap:"butt",
 }
