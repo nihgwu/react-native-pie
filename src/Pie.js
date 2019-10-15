@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { ART, Platform } from 'react-native'
-
-const { Surface, Shape, Path, Group } = ART
+import { Platform } from 'react-native'
+import { Surface, Shape, Path, Group } from '@react-native-community/art'
 
 function createPath(cx, cy, r, startAngle, arcAngle) {
   const p = new Path()
