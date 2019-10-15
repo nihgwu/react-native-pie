@@ -24,9 +24,7 @@
   },
   "homepage": "https://github.com/nihgwu/react-native-pie#readme",
   "peerDependencies": {
-    "prop-types": "^15.6.0"
-  },
-  "dependencies": {
+    "prop-types": "^15.6.0",
     "@react-native-community/art": "^1.0.1"
   }
 }
