@@ -46,7 +46,7 @@ const RingShape = props =>
         <ArcShape {...props} startAngle={180} arcAngle={180} />
       </Group>
 
-const Pie = ({ pieSections, radius, innerRadius, backgroundColor,strokeCap}) => {
+const Pie = ({ sections, radius, innerRadius, backgroundColor,strokeCap}) => {
   const width = radius - innerRadius
   const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360)
   let startValue = 0
@@ -59,7 +59,7 @@ const Pie = ({ pieSections, radius, innerRadius, backgroundColor,strokeCap}) => 
           strokeWidth={width}
         />
         <RingShape radius={radius} width={width} color={backgroundColor} />
-        {pieSections.map((section, idx) => {
+        {sections.map((section, idx) => {
           const { percentage, color } = section;
 
           const startAngle = startValue / 100 * 360
@@ -91,7 +91,7 @@ const Pie = ({ pieSections, radius, innerRadius, backgroundColor,strokeCap}) => 
 export default Pie
 
 Pie.propTypes = {
-  pieSections: PropTypes.arrayOf(
+  sections: PropTypes.arrayOf(
     PropTypes.exact({
       percentage: PropTypes.number.isRequired,
       color: PropTypes.string.isRequired,

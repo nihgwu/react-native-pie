@@ -35,7 +35,7 @@ export default class PieDemo extends Component {
       <View style={styles.container}>
             <Pie
               radius={100}
-              pieSections={[
+              sections={[
                 {
                   percentage: 10,
                   color: 'red',
@@ -57,9 +57,7 @@ export default class PieDemo extends Component {
             <Pie
               radius={100}
               innerRadius={60}
-              series={[10, 20, 30, 40]}
-              colors={['#f00', '#0f0', '#00f', '#ff0']}
-              pieSections={[
+              sections={[
                 {
                   percentage: 10,
                   color: '#f00',
@@ -82,9 +80,7 @@ export default class PieDemo extends Component {
               <Pie
                 radius={50}
                 innerRadius={45}
-                series={[60]}
-                colors={['#f00']}
-                pieSections={[
+                sections={[
                   {
                     percentage: 60,
                     color: '#f00',
@@ -124,7 +120,7 @@ const styles = StyleSheet.create({
 
 ## Props
 
-* **pieSections** `{percentage, color}` of each section in the pie - array, required
+* **sections** `{percentage, color}` of each section in the pie - array, required
 * **radius** `radius = size / 2`, required
 * **innerRadius** default to `0`
 * **backgroundColor** default to `#fff`
