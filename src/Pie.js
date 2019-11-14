@@ -46,7 +46,7 @@ const RingShape = props =>
         <ArcShape {...props} startAngle={180} arcAngle={180} />
       </Group>
 
-const Pie = ({ series, colors, radius, innerRadius, backgroundColor,strokeCap}) => {
+const Pie = ({ sections, radius, innerRadius, backgroundColor,strokeCap}) => {
   const width = radius - innerRadius
   const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360)
   let startValue = 0
@@ -59,11 +59,13 @@ const Pie = ({ series, colors, radius, innerRadius, backgroundColor,strokeCap}) 
           strokeWidth={width}
         />
         <RingShape radius={radius} width={width} color={backgroundColor} />
-        {series.map((item, idx) => {
+        {sections.map((section, idx) => {
+          const { percentage, color } = section;
+
           const startAngle = startValue / 100 * 360
-          const arcAngle = item / 100 * 360
-          startValue += item
-          const color = colors[idx]
+          const arcAngle = percentage / 100 * 360
+          startValue += percentage
+
           return arcAngle >= 360
             ? <RingShape
                 key={idx}
@@ -89,8 +91,12 @@ const Pie = ({ series, colors, radius, innerRadius, backgroundColor,strokeCap}) 
 export default Pie
 
 Pie.propTypes = {
-  series: PropTypes.arrayOf(PropTypes.number).isRequired,
-  colors: PropTypes.arrayOf(PropTypes.string).isRequired,
+  sections: PropTypes.arrayOf(
+    PropTypes.exact({
+      percentage: PropTypes.number.isRequired,
+      color: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   radius: PropTypes.number.isRequired,
   innerRadius: PropTypes.number,
   backgroundColor: PropTypes.string,

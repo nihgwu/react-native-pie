@@ -33,27 +33,66 @@ export default class PieDemo extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Pie
-          radius={100}
-          series={[10, 20, 30, 40]}
-          colors={['red', 'lime', 'blue', 'yellow']} />
-        <Pie
-          radius={100}
-          innerRadius={60}
-          series={[10, 20, 30, 40]}
-          colors={['#f00', '#0f0', '#00f', '#ff0']} />
-        <View>
-          <Pie
-            radius={50}
-            innerRadius={45}
-            series={[60]}
-            colors={['#f00']}
-            backgroundColor='#ddd' />
-          <View style={styles.gauge}>
-            <Text style={styles.gaugeText}>60%</Text>
+            <Pie
+              radius={100}
+              sections={[
+                {
+                  percentage: 10,
+                  color: 'red',
+                },
+                {
+                  percentage: 20,
+                  color: 'lime',
+                },
+                {
+                  percentage: 30,
+                  color: 'blue',
+                },
+                {
+                  percentage: 40,
+                  color: 'yellow',
+                },
+              ]}
+            />
+            <Pie
+              radius={100}
+              innerRadius={60}
+              sections={[
+                {
+                  percentage: 10,
+                  color: '#f00',
+                },
+                {
+                  percentage: 20,
+                  color: '#0f0',
+                },
+                {
+                  percentage: 30,
+                  color: '#00f',
+                },
+                {
+                  percentage: 40,
+                  color: '#ff0',
+                },
+              ]}
+            />
+            <View>
+              <Pie
+                radius={50}
+                innerRadius={45}
+                sections={[
+                  {
+                    percentage: 60,
+                    color: '#f00',
+                  },
+                ]}
+                backgroundColor="#ddd"
+              />
+              <View style={styles.gauge}>
+                <Text style={styles.gaugeText}>60%</Text>
+              </View>
+            </View>
           </View>
-        </View>
-      </View>
     )
   }
 }
@@ -81,8 +120,7 @@ const styles = StyleSheet.create({
 
 ## Props
 
-* **series** percentage array, required
-* **colors** pie color array, required
+* **sections** `{percentage, color}` of each section in the pie - array, required
 * **radius** `radius = size / 2`, required
 * **innerRadius** default to `0`
 * **backgroundColor** default to `#fff`
