@@ -9,7 +9,11 @@ Pie chart for React Native, works on **iOS** and **Android** both
 
 ## Install
 
-`npm i --save react-native-pie`  
+`npm i --save react-native-pie`
+
+## For react-native-pie >= 0.6.2 install peer dependency
+
+`npm i --save @react-native-community/art`
 
 ## Linking module
 
