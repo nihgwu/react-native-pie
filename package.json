@@ -26,9 +26,7 @@
   "peerDependencies": {
     "prop-types": "^15.6.0",
     "react": "*",
-    "react-native": "*"
-  },
-  "dependencies": {
+    "react-native": "*",
     "@react-native-community/art": "^1.0.3"
   }
 }
