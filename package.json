@@ -29,6 +29,6 @@
     "react-native": "*"
   },
   "dependencies": {
-    "@react-native-community/art": "https://github.com/Preeternal/art.git"
+    "@react-native-community/art": "^1.0.3"
   }
 }
