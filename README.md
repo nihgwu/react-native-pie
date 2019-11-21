@@ -15,19 +15,15 @@ Pie chart for React Native, works on **iOS** and **Android** both
 
 `npm i --save @react-native-community/art`
 
+## Migration from react-native-pie <= 0.6.2
+
+Please unlink react-native ART library
+
 ## Linking module
 
 ### Mostly automatic linking
 
-If using React Native >= 0.60 && react-native-pie >= 0.6.2, add the React-ART pod to your Podfile in ios folder:
-
-```js
-pod 'ReactNativeART', :path => '../node_modules/@react-native-community/art'
-```
-
-Remember to run pod install after these changes.
-
-Android does not needed any actions.
+If React Native >= 0.60 && react-native-pie >= 0.6.2, does not needed any actions.
 
 ### Manual linking for react-native-pie <= 0.6.2
 Link the ART library to your ReactNative project ([how to link a library](https://facebook.github.io/react-native/docs/linking-libraries-ios.html#content)). You'll find the React ART library in `node_modules/react-native/Libraries/ART/ART.xcodeproj`
