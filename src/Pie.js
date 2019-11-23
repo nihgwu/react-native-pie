@@ -58,7 +58,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor,strokeCap}) => {
           strokeWidth={width}
         />
         <RingShape radius={radius} width={width} color={backgroundColor} />
-        {sections.map((section, idx) => {
+        {sections?.map((section, idx) => {
           const { percentage, color } = section;
 
           const startAngle = startValue / 100 * 360
