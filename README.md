@@ -11,7 +11,7 @@ Pie chart for React Native, works on **iOS** and **Android** both
 
 `npm i --save react-native-pie`
 
-## For react-native-pie >= 0.6.2 install peer dependency
+## For react-native-pie >= 1.1.0 install peer dependency
 
 `npm i --save @react-native-community/art`
 
@@ -23,7 +23,7 @@ Please unlink react-native ART library
 
 ### Mostly automatic linking
 
-If React Native >= 0.60 && react-native-pie >= 0.6.2, does not needed any actions.
+If React Native >= 0.60 && react-native-pie >= 1.1.0, does not needed any actions.
 
 ### Manual linking for react-native-pie <= 0.6.2
 Link the ART library to your ReactNative project ([how to link a library](https://facebook.github.io/react-native/docs/linking-libraries-ios.html#content)). You'll find the React ART library in `node_modules/react-native/Libraries/ART/ART.xcodeproj`
