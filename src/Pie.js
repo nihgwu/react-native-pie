@@ -1,12 +1,12 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Platform } from 'react-native'
-import { Surface, Shape, Path, Group } from '@react-native-community/art'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Platform } from 'react-native';
+import { Surface, Shape, Path, Group } from '@react-native-community/art';
 
 function createPath(cx, cy, r, startAngle, arcAngle) {
-  const p = new Path()
+  const p = new Path();
   if (Platform.OS === 'web') {
-    p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle))
+    p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
     p.onArc(
       undefined,
       undefined,
@@ -18,12 +18,12 @@ function createPath(cx, cy, r, startAngle, arcAngle) {
       r,
       startAngle,
       startAngle + arcAngle,
-    )
+    );
   } else {
-    p.path.push(0, cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle))
-    p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1)
+    p.path.push(0, cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
+    p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1);
   }
-  return p
+  return p;
 }
 
 const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle }) => {
@@ -32,10 +32,10 @@ const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle }) => 
     radius,
     radius - width / 2,
     startAngle / 180 * Math.PI,
-    arcAngle / 180 * Math.PI
-  )
-  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap={strokeCap} />
-}
+    arcAngle / 180 * Math.PI,
+  );
+  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap={strokeCap} />;
+};
 
 const RingShape = props =>
   Platform.OS === 'ios'
@@ -43,55 +43,53 @@ const RingShape = props =>
     : <Group>
       <ArcShape {...props} startAngle={0} arcAngle={180} />
       <ArcShape {...props} startAngle={180} arcAngle={180} />
-    </Group>
+    </Group>;
 
-const Dividers = ({ dividers, dividerColorOverlays, strokeCap }) => {
+const Dividers = ({ paintedSections, strokeCap, dividerProps, width, radius }) => {
   const needsColorOverlay = strokeCap === 'round';
+  let dividerColorOverlayArray = [];
+  let dividerArray = [];
+  paintedSections.forEach((section, index) => {
+    const { percentage, color, startAngle } = section;
+    const shouldShow = percentage !== 100;
+
+    dividerArray.push(shouldShow && (<ArcShape
+      key={index}
+      radius={radius}
+      width={width}
+      color={dividerProps.color}
+      startAngle={startAngle - dividerProps.size / 2}
+      arcAngle={dividerProps.size}
+      strokeCap={strokeCap}
+    />));
+
+    dividerColorOverlayArray.push(shouldShow && needsColorOverlay && (<ArcShape
+      key={index}
+      radius={radius}
+      width={width}
+      color={color}
+      startAngle={startAngle + section.arcAngle - dividerProps.size / 2 - 1}
+      arcAngle={1}
+      strokeCap={strokeCap}
+    />));
+
+  });
   return (
     <Group>
-      {dividers}
-      {needsColorOverlay && dividerColorOverlays}
+      {dividerArray}
+      {dividerColorOverlayArray}
     </Group>
-  )
-}
-
-const createDivider = (percentage, color, startAngle, arcAngle, idx, radius, width, dividerProps, strokeCap) => {
-  const shouldShow = percentage !== 100;
-
-  return shouldShow && (<ArcShape
-    key={idx}
-    radius={radius}
-    width={width}
-    color={dividerProps.color}
-    startAngle={startAngle - dividerProps.size / 2}
-    arcAngle={dividerProps.size}
-    strokeCap={strokeCap}
-  />)
-}
-
-const createDividerColorOverlay = (percentage, color, startAngle, arcAngle, idx, radius, width, dividerProps, strokeCap) => {
-  const shouldShow = percentage !== 100;
-
-  return shouldShow && (<ArcShape
-    key={idx}
-    radius={radius}
-    width={width}
-    color={color}
-    startAngle={startAngle + arcAngle - dividerProps.size / 2 - 1}
-    arcAngle={1}
-    strokeCap={strokeCap}
-  />
-  )
-}
+  );
+};
 
 const shouldShowDividers = dividerProps => !!dividerProps.size;
+const getArcAngle = (percentage) => percentage / 100 * 360;
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerProps }) => {
-  const width = radius - innerRadius
-  const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360)
-  let startValue = 0
-  let dividers = [];
-  let dividerColorOverlayArray = [];
+  const width = radius - innerRadius;
+  const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360);
+  let startValue = 0;
+  let paintedSections = [];
 
   return (
     <Surface width={radius * 2} height={radius * 2}>
@@ -105,14 +103,12 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
         {sections.map((section, idx) => {
           const { percentage, color } = section;
 
-          const startAngle = startValue / 100 * 360
-          const arcAngle = percentage / 100 * 360
-          startValue += percentage
+          const startAngle = startValue / 100 * 360;
+          const arcAngle = getArcAngle(percentage);
+          startValue += percentage;
 
-          if (shouldShowDividers(dividerProps)) {
-            dividers.push(createDivider(percentage, color, startAngle, arcAngle, idx, radius, width, dividerProps, strokeCap))
-            dividerColorOverlayArray.push(createDividerColorOverlay(percentage, color, startAngle, arcAngle, idx, radius, width, dividerProps, strokeCap))
-          }
+          paintedSections.push({ percentage, color, startAngle, arcAngle });
+
 
           return arcAngle >= 360
             ? <RingShape
@@ -129,10 +125,10 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
               startAngle={startAngle}
               arcAngle={arcAngle}
               strokeCap={strokeCap}
-            />
+            />;
         })}
         {shouldShowDividers(dividerProps) &&
-          <Dividers dividers={dividers} dividerColorOverlays={dividerColorOverlayArray}
+          <Dividers paintedSections={paintedSections}
             dividerProps={dividerProps}
             width={width}
             radius={radius}
@@ -142,10 +138,10 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
 
       </Group>
     </Surface>
-  )
-}
+  );
+};
 
-export default Pie
+export default Pie;
 
 Pie.propTypes = {
   sections: PropTypes.arrayOf(
@@ -160,13 +156,13 @@ Pie.propTypes = {
   strokeCap: PropTypes.string,
   dividerProps: PropTypes.exact({
     size: PropTypes.number.isRequired,
-    color: PropTypes.string.isRequired
-  })
-}
+    color: PropTypes.string.isRequired,
+  }),
+};
 
 Pie.defaultProps = {
   dividerProps: { size: 0, color: '#fff' },
   innerRadius: 0,
   backgroundColor: '#fff',
-  strokeCap: "butt",
-}
+  strokeCap: 'butt',
+};
