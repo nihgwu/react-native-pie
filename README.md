@@ -32,6 +32,8 @@ Link the ART library to your ReactNative project ([how to link a library](https:
 > **for those who are using `react-native` with a version below `0.45`, please install `v0.1.0` instead**   
 > `npm i --save react-native-pie@0.1.0`
 
+**On android there is a ring shape drawing issue in React Native, I've made a PR to resolve it https://github.com/facebook/react-native/pull/15042, I also made a warkarond for this compoent https://github.com/nihgwu/react-native-pie/commit/86adf51339854ef3dc50df8cef6d12afb9df7b82, and will remove it when that PR is shipped with a stable release**
+
 ## Usage
 
 ```jsx
@@ -239,11 +241,9 @@ const styles = StyleSheet.create({
 * **radius** `radius = size / 2` , - number, **required**
 * **innerRadius** defaults to `0` - number, **optional**
 * **backgroundColor** defaults to `#fff` - string, **optional**
-* **strokeCap** ( `round` , `butt` , `square` ) defaults to `butt` - string, **optional**
+* **strokeCap** ( `round` , `butt` ) defaults to `butt` - string, **optional**
+  * **PLEASE NOTE** If using `strokeCap={'round'}` it is highly recommended to use a higher `innerRadius` (around 60% of `radius` and higher) in addition to not having very small percentage sections. This will ensure proper display. We hope to address these issues in future PRs
 * **dividerProps** `{size, color}` configuration of dividers for the pie - object, **optional**
-  * **PLEASE NOTE** If using `strokeCap={'round'}` along with dividers, it is highly recommended to use a higher `innerRadius` (around 60% of `radius` and higher) in addition to not having very small percentage slices. This will ensure proper display. We intend to address these issues in future PRs
-
-
 
 ## License
 
