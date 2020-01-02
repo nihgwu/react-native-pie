@@ -28,8 +28,7 @@ import {
 } from 'react-native'
 import Pie from 'react-native-pie'
 
-export default class PieDemo extends Component {
-  render() {
+export default () => {
     return (
       <View style={styles.container}>
           <View
@@ -190,7 +189,7 @@ export default class PieDemo extends Component {
                 style={styles.gauge}
               >
                 <Text
-                  style={gaugeText}
+                  style={styles.gaugeText}
                 >
                   60%
                 </Text>
@@ -199,7 +198,7 @@ export default class PieDemo extends Component {
           </View>
         </View>
     )
-  }
+  
 }
 
 const styles = StyleSheet.create({
@@ -207,7 +206,7 @@ const styles = StyleSheet.create({
   gauge: {
     position: 'absolute',
     width: 100,
-    height: 100,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
   },
