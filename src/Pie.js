@@ -63,15 +63,17 @@ const Dividers = ({ paintedSections, strokeCap, dividerProps, width, radius }) =
       strokeCap={strokeCap}
     />));
 
-    dividerColorOverlayArray.push(shouldShow && needsColorOverlay && (<ArcShape
-      key={index}
-      radius={radius}
-      width={width}
-      color={color}
-      startAngle={startAngle + section.arcAngle - dividerProps.size / 2 - 1}
-      arcAngle={1}
-      strokeCap={strokeCap}
-    />));
+    if (needsColorOverlay) {
+      dividerColorOverlayArray.push(shouldShow && (<ArcShape
+        key={index}
+        radius={radius}
+        width={width}
+        color={color}
+        startAngle={startAngle + section.arcAngle - dividerProps.size / 2 - 1}
+        arcAngle={1}
+        strokeCap={strokeCap}
+      />));
+    }
 
   });
   return (
