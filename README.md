@@ -9,13 +9,28 @@ Pie chart for React Native, works on **iOS** and **Android** both
 
 ## Install
 
-1. `npm i --save react-native-pie` 
-2. Link the ART library to your ReactNative project ([how to link a library](https://facebook.github.io/react-native/docs/linking-libraries-ios.html#content)). You'll find the React ART library in `node_modules/react-native/Libraries/ART/ART.xcodeproj` 
+`npm i --save react-native-pie`
 
-> **for those who are using `react-native` with a version below `0.45` , please install `v0.1.0` instead**   
-> `npm i --save react-native-pie@0.1.0` 
+## For react-native-pie >= 1.1.0 install peer dependency
 
-> **On android there is a ring shape drawing issue in React Native, I've made a PR to resolve it https://github.com/facebook/react-native/pull/15042, I also made a workarond for this component https://github.com/nihgwu/react-native-pie/commit/86adf51339854ef3dc50df8cef6d12afb9df7b82, and will remove it when that PR is shipped with a stable release**
+`npm i --save @react-native-community/art`
+
+## Migration from react-native-pie <= 0.6.2
+
+Please unlink react-native ART library
+
+## Linking module
+
+### Mostly automatic linking
+
+If React Native >= 0.60 && react-native-pie >= 1.1.0, does not needed any actions.
+
+### Manual linking for react-native-pie <= 0.6.2
+Link the ART library to your ReactNative project ([how to link a library](https://facebook.github.io/react-native/docs/linking-libraries-ios.html#content)). You'll find the React ART library in `node_modules/react-native/Libraries/ART/ART.xcodeproj`
+
+
+> **for those who are using `react-native` with a version below `0.45`, please install `v0.1.0` instead**   
+> `npm i --save react-native-pie@0.1.0`
 
 ## Usage
 
