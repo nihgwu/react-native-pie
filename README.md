@@ -131,7 +131,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerProps={{ size: 2, color: 'white' }}
+              dividerSize={2}
               strokeCap={'round'}
             />
             <Pie
@@ -155,7 +155,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerProps={{ size: 3, color: 'white' }}
+              dividerSize={3}
               strokeCap={'butt'}
             />
           </View>
@@ -187,7 +187,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerProps={{ size: 3, color: 'white' }}
+              dividerSize={3}
               strokeCap={'butt'}
             />
             <View style={{ width: 175, alignItems: 'center' }}>
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
 * **backgroundColor** defaults to `#fff` - string, **optional**
 * **strokeCap** ( `round` , `butt` ) defaults to `butt` - string, **optional**
   * **PLEASE NOTE** If using `strokeCap={'round'}` it is highly recommended to use a higher `innerRadius` (around 60% of `radius` and higher) in addition to not having very small percentage sections. This will ensure proper display. We hope to address these issues in future PRs
-* **dividerProps** `{size, color}` configuration of dividers for the pie - object, **optional**
+* **dividerSize** defaults to `0` - percentage size to divide the sections - number, **optional**
 
 ## License
 
