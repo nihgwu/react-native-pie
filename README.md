@@ -1,6 +1,6 @@
 # react-native-pie
 
-Pie chart for React Native, works on **iOS** and **Android** both
+Pie chart for React Native, works on both **iOS** and **Android**
 
 ## Demo
 
@@ -10,10 +10,12 @@ Pie chart for React Native, works on **iOS** and **Android** both
 ## Install
 
 `npm i --save react-native-pie`
+`yarn add react-native-pie`
 
 ## For react-native-pie >= 1.1.0 install peer dependency
 
 `npm i --save @react-native-community/art`
+`yarn add @react-native-community/art`
 
 ## Migration from react-native-pie <= 0.6.2
 
@@ -23,21 +25,22 @@ Please unlink react-native ART library
 
 ### Mostly automatic linking
 
-If React Native >= 0.60 && react-native-pie >= 1.1.0, does not needed any actions.
+If `react-native` >= 0.60 && react-native-pie >= 1.1.0, the package will be linked automatically.
 
 ### Manual linking for react-native-pie <= 0.6.2
 Link the ART library to your ReactNative project ([how to link a library](https://facebook.github.io/react-native/docs/linking-libraries-ios.html#content)). You'll find the React ART library in `node_modules/react-native/Libraries/ART/ART.xcodeproj`
 
 
-> **for those who are using `react-native` with a version below `0.45`, please install `v0.1.0` instead**   
+### React Native Version Support
+> **If you are using < `.45`, please install `react-native-pie` `v0.1.0` instead**   
 > `npm i --save react-native-pie@0.1.0`
 
-> **On android there is a ring shape drawing issue in React Native, I've made a PR to resolve it https://github.com/facebook/react-native/pull/15042, I also made a warkarond for this compoent https://github.com/nihgwu/react-native-pie/commit/86adf51339854ef3dc50df8cef6d12afb9df7b82, and will remove it when that PR is shipped with a stable release**
+> **Please use >= `0.50.0-rc.0` otherwise there is a ring shape drawing issue with `react-native-pie`**
 
 ## Usage
 
 ```jsx
-import React, { Component } from 'react'
+import React from 'react'
 import {
   StyleSheet,
   View,
@@ -131,7 +134,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerSize={2}
+              dividerSize={4}
               strokeCap={'round'}
             />
             <Pie
@@ -155,7 +158,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerSize={3}
+              dividerSize={6}
               strokeCap={'butt'}
             />
           </View>
@@ -187,7 +190,7 @@ export default () => {
                   color: '#EBD22F',
                 },
               ]}
-              dividerSize={3}
+              dividerSize={6}
               strokeCap={'butt'}
             />
             <View style={{ width: 175, alignItems: 'center' }}>

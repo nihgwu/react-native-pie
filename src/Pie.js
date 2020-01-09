@@ -41,10 +41,9 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
   let dividerColorOverlayArray = [];
   let dividerArray = [];
   paintedSections.forEach((section, index) => {
-    const { percentage, color, startAngle } = section;
-    const shouldShow = percentage !== 100;
+    const { color, startAngle } = section;
 
-    dividerArray.push(shouldShow && (<ArcShape
+    dividerArray.push(<ArcShape
       key={index}
       radius={radius}
       width={width}
@@ -52,9 +51,9 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
       startAngle={startAngle - dividerSize / 2}
       arcAngle={dividerSize}
       strokeCap={'round'}
-    />));
+    />);
 
-    dividerColorOverlayArray.push(shouldShow && (<ArcShape
+    dividerColorOverlayArray.push(<ArcShape
       key={index}
       radius={radius}
       width={width}
@@ -62,7 +61,7 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
       startAngle={startAngle + section.arcAngle - dividerSize / 2 - 1}
       arcAngle={1}
       strokeCap={'round'}
-    />));
+    />);
 
 
   });
@@ -107,8 +106,8 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             radius={radius}
             width={width}
             color={color}
-            startAngle={startAngle + dividerSize}
-            arcAngle={arcAngle - dividerSize}
+            startAngle={startAngle + dividerSize / 2}
+            arcAngle={arcAngle - dividerSize / 2}
             strokeCap={strokeCap}
           />;
         })}
