@@ -44,25 +44,27 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
     const { percentage, color, startAngle } = section;
     const shouldShowDividerForSection = shouldShowDivider(percentage, dividerSize);
 
-    dividerArray.push(shouldShowDividerForSection && (<ArcShape
-      key={index}
-      radius={radius}
-      width={width}
-      color={backgroundColor}
-      startAngle={startAngle - dividerSize / 2}
-      arcAngle={dividerSize}
-      strokeCap={'round'}
-    />));
+    if (shouldShowDividerForSection) {
+      dividerArray.push(<ArcShape
+        key={index}
+        radius={radius}
+        width={width}
+        color={backgroundColor}
+        startAngle={startAngle - dividerSize / 2}
+        arcAngle={dividerSize}
+        strokeCap={'round'}
+      />);
 
-    dividerColorOverlayArray.push(shouldShowDividerForSection && (<ArcShape
-      key={index}
-      radius={radius}
-      width={width}
-      color={color}
-      startAngle={startAngle + section.arcAngle - dividerSize / 2 - 1}
-      arcAngle={1}
-      strokeCap={'round'}
-    />));
+      dividerColorOverlayArray.push(<ArcShape
+        key={index}
+        radius={radius}
+        width={width}
+        color={color}
+        startAngle={startAngle + section.arcAngle - dividerSize / 2 - 1}
+        arcAngle={1}
+        strokeCap={'round'}
+      />);
+    }
 
 
   });
