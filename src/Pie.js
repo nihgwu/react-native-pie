@@ -40,10 +40,9 @@ const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle }) => 
 const RoundDividers = ({ paintedSections, dividerSize, width, radius, backgroundColor }) => {
   let dividerColorOverlayArray = [];
   let dividerArray = [];
-  paintedSections.forEach((section, index) => {
-    const { color, startAngle } = section;
-    
-    if (paintedSections.length > 1) {
+  if(paintedSections.length > 1){
+    paintedSections.forEach((section, index) => {
+      const { color, startAngle } = section;
       dividerArray.push(<ArcShape
         key={index}
         radius={radius}
@@ -53,7 +52,7 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
         arcAngle={dividerSize}
         strokeCap={'round'}
       />);
-
+  
       dividerColorOverlayArray.push(<ArcShape
         key={index}
         radius={radius}
@@ -63,10 +62,8 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
         arcAngle={1}
         strokeCap={'round'}
       />);
-    }
-
-
   });
+}
   return ( 
     <Group>
       {dividerArray}
@@ -84,7 +81,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
   const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
   let startValue = 0;
   let paintedSections = [];
-  const shouldShowDividerForSection = shouldShowDivider(sections);
+  const showDividers = shouldShowDivider(sections);
   return (
     <Surface width={radius * 2} height={radius * 2}>
       <Group rotation={-90} originX={radius} originY={radius}>
@@ -108,8 +105,8 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             radius={radius}
             width={width}
             color={color}
-            startAngle={shouldShowDividerForSection ? startAngle + dividerSize / 2 : startAngle}
-            arcAngle={shouldShowDividerForSection ? arcAngle - dividerSize : arcAngle}
+            startAngle={showDividers ? startAngle + dividerSize / 2 : startAngle}
+            arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
             strokeCap={strokeCap}
           />;
         })}
