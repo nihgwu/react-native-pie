@@ -73,7 +73,7 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
 };
 
 const getArcAngle = (percentage) => percentage / 100 * 360;
-const shouldShowDivider = (sections) => sections.length > 1;
+const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && && !Number.isNaN(dividerSize);;
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
   const width = radius - innerRadius;
@@ -81,7 +81,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
   const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
   let startValue = 0;
   let paintedSections = [];
-  const showDividers = shouldShowDivider(sections);
+  const showDividers = shouldShowDivider(sections, dividerSize);
   return (
     <Surface width={radius * 2} height={radius * 2}>
       <Group rotation={-90} originX={radius} originY={radius}>
