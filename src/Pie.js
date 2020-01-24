@@ -73,7 +73,7 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
 };
 
 const getArcAngle = (percentage) => percentage / 100 * 360;
-const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && && !Number.isNaN(dividerSize);;
+const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Number.isNaN(dividerSize);
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
   const width = radius - innerRadius;
