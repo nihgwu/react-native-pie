@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { Surface, Shape, Path, Group } from '@react-native-community/art';
 
-function createPath(cx, cy, r, startAngle, arcAngle) {
+function createPath(cx, cy, r, startAngle, arcAngle, isBezian) {
   const p = new Path();
   if (Platform.OS === 'web') {
     p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
@@ -20,21 +20,57 @@ function createPath(cx, cy, r, startAngle, arcAngle) {
       startAngle + arcAngle,
     );
   } else {
-    p.path.push(0, cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
-    p.path.push(4, cx, cy, r, startAngle, startAngle + arcAngle, 1);
+    
+    //starting point of our chart
+  const ROUNDNESS = .08;
+  const PULLBACK = .05;
+  const ANCHORFORWARD = .2;
+  if(isBezian){
+      // startAngle += .02;
+      //This is for the part that is the divider
+      p.moveTo(cx + r * (1 + ROUNDNESS) * Math.cos(startAngle + PULLBACK), cy + r * (1 + ROUNDNESS) * Math.sin(startAngle + PULLBACK));
+      p.onBezierCurve(
+        undefined,
+        undefined,
+        cx + r  * (1 + ROUNDNESS) * Math.cos(startAngle + PULLBACK),
+        cy + r  * (1 + ROUNDNESS) * Math.sin(startAngle + PULLBACK),
+        cx + r * Math.cos((startAngle + ANCHORFORWARD)),
+        cy + r * Math.sin((startAngle + ANCHORFORWARD)),
+        cx + r * (1 - ROUNDNESS) * Math.cos(startAngle + PULLBACK),
+        cy + r  * (1 - ROUNDNESS) * Math.sin(startAngle + PULLBACK),
+      );
+    }else{
+      //This is for the main arc of the pie chart
+      p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
+      p.onArc(
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        cx,
+        cy,
+        r,
+        r,
+        startAngle,
+        startAngle + arcAngle,
+      )
+    }
   }
   return p;
 }
 
-const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle }) => {
+const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle, isBezian }) => {
+  
   const path = createPath(
     radius,
     radius,
     radius - width / 2,
     startAngle / 180 * Math.PI,
     arcAngle / 180 * Math.PI,
+    isBezian,
   );
-  return <Shape d={path} stroke={color} strokeWidth={width} strokeCap={strokeCap} />;
+  const strokeWidth = isBezian ? (arcAngle * 5) : width;
+  return <Shape d={path} stroke={color} strokeWidth={strokeWidth} strokeCap={strokeCap} />;
 };
 
 const RoundDividers = ({ paintedSections, dividerSize, width, radius, backgroundColor }) => {
@@ -48,9 +84,10 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
         radius={radius}
         width={width}
         color={backgroundColor}
-        startAngle={startAngle - dividerSize / 2}
+        startAngle={startAngle - dividerSize / 2 - 3}
         arcAngle={dividerSize}
-        strokeCap={'round'}
+        strokeCap={'butt'}
+        isBezian={true}
       />);
   
       dividerColorOverlayArray.push(<ArcShape
@@ -58,9 +95,21 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
         radius={radius}
         width={width}
         color={color}
-        startAngle={startAngle + section.arcAngle - dividerSize / 2 - 1}
+        startAngle={startAngle + section.arcAngle - dividerSize / 2 - 4}
         arcAngle={1}
-        strokeCap={'round'}
+        strokeCap={'butt'}
+        isBezian={true}
+      />);
+
+      dividerColorOverlayArray.push(<ArcShape
+        key={index}
+        radius={radius}
+        width={width}
+        color={color}
+        startAngle={startAngle + section.arcAngle - dividerSize / 2 - 5}
+        arcAngle={1}
+        strokeCap={'butt'}
+        isBezian={true}
       />);
   });
 }
@@ -77,7 +126,8 @@ const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Num
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
   const width = radius - innerRadius;
-  const backgroundPath = createPath(radius, radius, radius - width / 2, 0, 360);
+  const backgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
+  const backgroundPath2 = createPath(radius, radius, radius + 12, 0, 360);
   const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
   let startValue = 0;
   let paintedSections = [];
@@ -85,11 +135,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
   return (
     <Surface width={radius * 2} height={radius * 2}>
       <Group rotation={-90} originX={radius} originY={radius}>
-        <Shape
-          d={backgroundPath}
-          stroke={backgroundColor}
-          strokeWidth={width}
-        />
+        
         <ArcShape radius={radius} width={width} color={backgroundColor} startAngle={0} arcAngle={360} />
         {sections.map((section, idx) => {
           const { percentage, color } = section;
@@ -105,9 +151,9 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             radius={radius}
             width={width}
             color={color}
-            startAngle={showDividers ? startAngle + dividerSize / 2 : startAngle}
+            startAngle={showDividers ? startAngle + dividerSize : startAngle}
             arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
-            strokeCap={strokeCap}
+            strokeCap={'butt'}
           />;
         })}
         {shouldShowRoundDividers &&
@@ -117,8 +163,18 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             width={width}
             radius={radius}
           />}
-
-
+        
+      <Shape
+          d={backgroundPath}
+          stroke={backgroundColor}
+          strokeWidth={width}
+        />
+      
+        <Shape
+          d={backgroundPath2}
+          stroke={backgroundColor}
+          strokeWidth={width}
+        />
       </Group>
     </Surface>
   );
