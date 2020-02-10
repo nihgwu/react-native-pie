@@ -140,8 +140,7 @@ const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Num
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
   const width = radius - innerRadius;
-  //given is round and divider size is <= 2 then we want this to be butt
-  
+  strokeCapBig = dividerSize <= 2 || strokeCap == 'butt' ? 'butt' : 'round';
   //These two paths clean up any left over svg which we dont want to see
   const backgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
   const backgroundPath2 = createPath(radius, radius, radius + ((radius - innerRadius)) / 2, 0, 360);
@@ -169,7 +168,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             color={color}
             startAngle={showDividers ? startAngle + dividerSize : startAngle}
             arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
-            strokeCap={'butt'}
+            strokeCap={strokeCapBig}
           />;
         })}
         {shouldShowRoundDividers &&
