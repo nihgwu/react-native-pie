@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Platform } from 'react-native';
 import { Surface, Shape, Path, Group } from '@react-native-community/art';
-import { divide } from 'ramda';
 
 function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
   const p = new Path();
