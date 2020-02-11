@@ -21,9 +21,7 @@ function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
     );
   } else {
     
-    //starting point of our chart
-  
-  
+  //starting point of our chart
   if(isBezian){
     const ROUNDNESSOUSIDE = 1 - (r - innerRadius)/ innerRadius;
     const ROUNDNESSINSIDE = 1 + (r - innerRadius)/ innerRadius;
@@ -138,12 +136,18 @@ const getArcAngle = (percentage) => percentage / 100 * 360;
 const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Number.isNaN(dividerSize);
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
+
+  // This is the width for the arc
   const width = radius - innerRadius;
-  strokeCapBig = dividerSize <= 2 || strokeCap == 'butt' ? 'butt' : 'round';
+
+  strokeCapBigForBigArc = dividerSize <= 2 || strokeCap == 'butt' ? 'butt' : 'round';
+
   //These two paths clean up any left over svg which we dont want to see
-  const backgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
-  const backgroundPath2 = createPath(radius, radius, radius + ((radius - innerRadius)) / 2, 0, 360);
+  const innerBackgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
+  const outerBackgroundPath = createPath(radius, radius, radius + ((radius - innerRadius)) / 2, 0, 360);
+
   const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
+
   let startValue = 0;
   let paintedSections = [];
   const showDividers = shouldShowDivider(sections, dividerSize);
@@ -167,7 +171,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             color={color}
             startAngle={showDividers ? startAngle + dividerSize : startAngle}
             arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
-            strokeCap={strokeCapBig}
+            strokeCap={strokeCapBigForBigArc}
           />;
         })}
         {shouldShowRoundDividers &&
@@ -179,14 +183,14 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
             innerRadius={innerRadius}
           />}
         
-      <Shape
-          d={backgroundPath}
-          stroke={backgroundColor}
-          strokeWidth={width}
-        />
+        <Shape
+            d={innerBackgroundPath}
+            stroke={backgroundColor}
+            strokeWidth={width}
+          />
       
         <Shape
-          d={backgroundPath2}
+          d={outerBackgroundPath}
           stroke={backgroundColor}
           strokeWidth={width}
         />
