@@ -106,17 +106,19 @@ const LargeBands = ({dimensions, paintedSections, sections, shouldShowRoundDivid
 
 // These are the rounded dividers when strokeCap='round'
 const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }) => {
-  const {dividerSize, radius, innerRadius, width} = dimensions;
-  let dividerOffSet = (dividerSize * 2) + 3;
+  let {dividerSize, radius, innerRadius, width} = dimensions;
+  let dividerOffSet = (dividerSize * 2) + 6;
   let strokeCap = 'butt';
   let isBezian = true;
   let dividerColorOverlayArray = [];
   let dividerArray = [];
+  
   if(paintedSections.length > 1 && visible){
+    
     paintedSections.forEach((section, index) => {
       const { color, startAngle } = section;
       
-      for(let i = 0; i < dividerSize * 2; i++){
+      for(let i = 0; i < (dividerSize * 2) + 2; i++){
         dividerArray.push(<ArcShape
           key={index}
           dimensions={dimensions}
@@ -148,11 +150,11 @@ const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }
 };
 
 // These circles clean up the strokes left over from the bezian curves
-const CleanUpCircles = ({dimensions, backgroundColor}) => {
+const CleanUpCircles = ({dimensions, backgroundColor, visible}) => {
   const { radius, innerRadius, width} = dimensions;
   const innerBackgroundPath = createPath(radius, radius, innerRadius - ((width) / 2), 0, 360);
   const outerBackgroundPath = createPath(radius, radius, radius + ((width)) / 2, 0, 360);
-  if((width) < 100){
+  if((width) < 100 && visible){
     return (<>
       <Shape
           d={innerBackgroundPath}
@@ -170,8 +172,8 @@ const CleanUpCircles = ({dimensions, backgroundColor}) => {
 }
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
-  strokeCapForLargeBands = dividerSize <= 2 || strokeCap == 'butt' ? 'butt' : 'round';
-  const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
+  strokeCapForLargeBands = dividerSize > 0 || strokeCap == 'butt' ? 'butt' : 'butt';
+  const shouldShowRoundDividers = strokeCap === 'round';
   let paintedSections = [];
   
   // This is the width for the arc
@@ -199,7 +201,7 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
           backgroundColor={backgroundColor}
           visible={shouldShowRoundDividers}
         />
-        <CleanUpCircles dimensions={dimensions} backgroundColor={backgroundColor} />
+        <CleanUpCircles dimensions={dimensions} backgroundColor={backgroundColor} visible={shouldShowRoundDividers}/>
       </Group>
     </Surface>
   );
