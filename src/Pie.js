@@ -61,7 +61,11 @@ function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
 }
 
 const ArcShape = ({dimensions, color, strokeCap, startAngle, arcAngle, isBezian}) => {
+<<<<<<< HEAD
   const {radius, innerRadius, width, dividerSize} = dimensions;
+=======
+  const {radius, innerRadius, width} = dimensions;
+>>>>>>> f5ea3e34239b7f7fb9a4a9828776f11eb82c516f
   const path = createPath(
     radius,
     radius,
@@ -83,7 +87,11 @@ const InitialBand = ({dimensions, color}) => {
 const getArcAngle = (percentage) => percentage / 100 * 360;
 const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Number.isNaN(dividerSize);
 
+<<<<<<< HEAD
 const LargeBands = ({dimensions, paintedSections, sections, shouldShowRoundDividers, strokeCapForLargeBands}) => {
+=======
+const LargeBands = ({paintedSections, sections, shouldShowRoundDividers, strokeCapForLargeBands, dimensions}) => {
+>>>>>>> f5ea3e34239b7f7fb9a4a9828776f11eb82c516f
   let startValue = 0;
   const {radius, width, dividerSize} = dimensions;
   const showDividers = shouldShowDivider(sections, dividerSize);
@@ -107,9 +115,15 @@ const LargeBands = ({dimensions, paintedSections, sections, shouldShowRoundDivid
 
 
 // These are the rounded dividers when strokeCap='round'
+<<<<<<< HEAD
 const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }) => {
   const {dividerSize, radius, innerRadius, width} = dimensions;
   let dividerOffSet = (dividerSize * 2) + 3;
+=======
+const RoundDividers = ({ paintedSections, dimensions, backgroundColor, visible }) => {
+  const {dividerSize, radius, innerRadius, width} = dimensions;
+  let dividerOffSet = 3;
+>>>>>>> f5ea3e34239b7f7fb9a4a9828776f11eb82c516f
   let strokeCap = 'butt';
   let isBezian = true;
   let dividerColorOverlayArray = [];
@@ -117,6 +131,7 @@ const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }
   if(paintedSections.length > 1 && visible){
     paintedSections.forEach((section, index) => {
       const { color, startAngle } = section;
+<<<<<<< HEAD
       
       for(let i = 0; i < dividerSize * 2; i++){
         dividerArray.push(<ArcShape
@@ -139,6 +154,27 @@ const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }
         />);
       }
       
+=======
+      dividerArray.push(<ArcShape
+        key={index}
+        dimensions={dimensions}
+        color={backgroundColor}
+        startAngle={startAngle - dividerSize/ 2 - (dividerOffSet)}
+        arcAngle={dividerSize}
+        isBezian={isBezian}
+        strokeCap={strokeCap}
+      />);
+      
+      dividerColorOverlayArray.push(<ArcShape
+        key={index}
+        dimensions={dimensions}
+        color={color}
+        startAngle={startAngle + section.arcAngle - dividerSize / 2 - (dividerOffSet + 1 && dividerOffSet + 2)}
+        arcAngle={1}
+        isBezian={isBezian}
+        strokeCap={strokeCap}
+      />);
+>>>>>>> f5ea3e34239b7f7fb9a4a9828776f11eb82c516f
   });
   }
   return ( 
@@ -160,7 +196,11 @@ const CleanUpCircles = ({dimensions, backgroundColor}) => {
           d={innerBackgroundPath}
           stroke={backgroundColor}
           strokeWidth={width}
+<<<<<<< HEAD
       />
+=======
+        />
+>>>>>>> f5ea3e34239b7f7fb9a4a9828776f11eb82c516f
       <Shape
         d={outerBackgroundPath}
         stroke={backgroundColor}
