@@ -20,12 +20,11 @@ function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
       startAngle + arcAngle,
     );
   } else {
-    
   //starting point of our chart
   if(isBezian){
     const ROUNDNESSOUSIDE = 1 - (r - innerRadius)/ innerRadius;
     const ROUNDNESSINSIDE = 1 + (r - innerRadius)/ innerRadius;
-    const PULLBACK = .05;
+    const PULLBACK = 0.05;
     const ANCHORFORWARD = .2 ;
       //This is for the part that is the divider
       p.moveTo(cx + r * ROUNDNESSOUSIDE * Math.cos(startAngle + PULLBACK), cy + r * ROUNDNESSOUSIDE * Math.sin(startAngle + PULLBACK));
@@ -73,7 +72,8 @@ const ArcShape = ({ radius, width, color, strokeCap, startAngle, arcAngle, isBez
   return <Shape d={path} stroke={color} strokeWidth={strokeWidth} strokeCap={strokeCap} />;
 };
 
-const RoundDividers = ({ paintedSections, dividerSize, width, radius, backgroundColor, innerRadius }) => {
+// These are the rounded dividers when strokeCap='round'
+const RoundDividers = ({ paintedSections, dividerSize, width, radius, backgroundColor, innerRadius, visible }) => {
   let dividerOffSet = 3;
   let strokeCap = 'butt';
   let isBezian = true;
@@ -84,7 +84,7 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
   }
   let dividerColorOverlayArray = [];
   let dividerArray = [];
-  if(paintedSections.length > 1){
+  if(paintedSections.length > 1 && visible){
     paintedSections.forEach((section, index) => {
       const { color, startAngle } = section;
       dividerArray.push(<ArcShape
@@ -98,25 +98,13 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
         innerRadius={innerRadius}
         strokeCap={strokeCap}
       />);
-  
+      
       dividerColorOverlayArray.push(<ArcShape
         key={index}
         radius={radius}
         width={width}
         color={color}
-        startAngle={startAngle + section.arcAngle - dividerSize / 2 - (dividerOffSet + 1)}
-        arcAngle={1}
-        isBezian={isBezian}
-        innerRadius={innerRadius}
-        strokeCap={strokeCap}
-      />);
-
-      dividerColorOverlayArray.push(<ArcShape
-        key={index}
-        radius={radius}
-        width={width}
-        color={color}
-        startAngle={startAngle + section.arcAngle - dividerSize / 2 - (dividerOffSet + 2)}
+        startAngle={startAngle + section.arcAngle - dividerSize / 2 - (dividerOffSet + 1 && dividerOffSet + 2)}
         arcAngle={1}
         isBezian={isBezian}
         innerRadius={innerRadius}
@@ -132,6 +120,55 @@ const RoundDividers = ({ paintedSections, dividerSize, width, radius, background
   );
 };
 
+// These circles clean up the strokes left over from the bezian curves
+const CleanUpCircles = ({radius, innerRadius, backgroundColor}) => {
+  const innerBackgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
+  const outerBackgroundPath = createPath(radius, radius, radius + ((radius - innerRadius)) / 2, 0, 360);
+  if((radius - innerRadius) < 100){
+    return (<>
+      <Shape
+          d={innerBackgroundPath}
+          stroke={backgroundColor}
+          strokeWidth={radius - innerRadius}
+        />
+      <Shape
+        d={outerBackgroundPath}
+        stroke={backgroundColor}
+        strokeWidth={radius - innerRadius}
+      />
+    </>)
+  }
+  return null;
+  
+}
+
+//The initial band to set the backgroundColor behind the pie chart
+const InitialBand = ({radius, width, color}) => {
+  return <ArcShape radius={radius} width={width} color={color} startAngle={0} arcAngle={360} />
+}
+
+const LargeBands = ({paintedSections, sections, shouldShowRoundDividers, radius, width, dividerSize}) => {
+  let startValue = 0;
+  const showDividers = shouldShowDivider(sections, dividerSize);
+  paintedSections = sections.map((section, idx) => {
+    const { percentage, color } = section;
+    const startAngle = startValue / 100 * 360;
+    const arcAngle = getArcAngle(percentage);
+    startValue += percentage;
+    shouldShowRoundDividers && paintedSections.push({ percentage, color, startAngle, arcAngle });
+    return <ArcShape
+      key={idx}
+      radius={radius}
+      width={width}
+      color={color}
+      startAngle={showDividers ? startAngle + dividerSize : startAngle}
+      arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
+      strokeCap={strokeCapBigForBigArc}
+    />;
+  })
+  return paintedSections;
+}
+
 const getArcAngle = (percentage) => percentage / 100 * 360;
 const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Number.isNaN(dividerSize);
 
@@ -139,61 +176,24 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
 
   // This is the width for the arc
   const width = radius - innerRadius;
-
   strokeCapBigForBigArc = dividerSize <= 2 || strokeCap == 'butt' ? 'butt' : 'round';
-
-  //These two paths clean up any left over svg which we dont want to see
-  const innerBackgroundPath = createPath(radius, radius, innerRadius - ((radius - innerRadius) / 2), 0, 360);
-  const outerBackgroundPath = createPath(radius, radius, radius + ((radius - innerRadius)) / 2, 0, 360);
-
   const shouldShowRoundDividers = !!dividerSize && strokeCap === 'round';
-
-  let startValue = 0;
   let paintedSections = [];
-  const showDividers = shouldShowDivider(sections, dividerSize);
+  
   return (
     <Surface width={radius * 2} height={radius * 2}>
       <Group rotation={-90} originX={radius} originY={radius}>
-        <ArcShape radius={radius} width={width} color={backgroundColor} startAngle={0} arcAngle={360} />
-        {sections.map((section, idx) => {
-          const { percentage, color } = section;
-          
-          const startAngle = startValue / 100 * 360;
-          const arcAngle = getArcAngle(percentage);
-          startValue += percentage;
-
-          shouldShowRoundDividers && paintedSections.push({ percentage, color, startAngle, arcAngle });
-
-          return <ArcShape
-            key={idx}
-            radius={radius}
-            width={width}
-            color={color}
-            startAngle={showDividers ? startAngle + dividerSize : startAngle}
-            arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
-            strokeCap={strokeCapBigForBigArc}
-          />;
-        })}
-        {shouldShowRoundDividers &&
-          <RoundDividers paintedSections={paintedSections}
-            backgroundColor={backgroundColor}
-            dividerSize={dividerSize}
-            width={width}
-            radius={radius}
-            innerRadius={innerRadius}
-          />}
-        
-        <Shape
-            d={innerBackgroundPath}
-            stroke={backgroundColor}
-            strokeWidth={width}
-          />
-      
-        <Shape
-          d={outerBackgroundPath}
-          stroke={backgroundColor}
-          strokeWidth={width}
+        <InitialBand radius={radius} width={width} color={backgroundColor} />
+        <LargeBands paintedSections={paintedSections} sections={sections} shouldShowRoundDividers={shouldShowRoundDividers} radius={radius} width={width} dividerSize={dividerSize} />
+        <RoundDividers paintedSections={paintedSections}
+          backgroundColor={backgroundColor}
+          dividerSize={dividerSize}
+          width={width}
+          radius={radius}
+          innerRadius={innerRadius}
+          visible={shouldShowRoundDividers}
         />
+        <CleanUpCircles radius={radius} innerRadius={innerRadius} backgroundColor={backgroundColor} />
       </Group>
     </Surface>
   );
