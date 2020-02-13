@@ -5,7 +5,26 @@ import { Surface, Shape, Path, Group } from '@react-native-community/art';
 
 function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
   const p = new Path();
-  if (Platform.OS === 'web') {
+  //starting point of our chart
+  if(isBezian && Platform.OS !== 'web'){
+    let ROUNDNESSOUSIDE = 1 - ((r - innerRadius)/ innerRadius) - (arcAngle * .5);
+    let ROUNDNESSINSIDE = 1 + ((r - innerRadius)/ innerRadius) + (arcAngle * .5);
+    const PULLBACK = 0.05;
+    const ANCHORFORWARD = .2 ;
+      //This is for the part that is the divider
+    p.moveTo(cx + r * ROUNDNESSOUSIDE * Math.cos(startAngle + PULLBACK), cy + r * ROUNDNESSOUSIDE * Math.sin(startAngle + PULLBACK));
+    p.onBezierCurve(
+      undefined,
+      undefined,
+      cx + r  * ROUNDNESSOUSIDE * Math.cos(startAngle + PULLBACK),
+      cy + r  * ROUNDNESSOUSIDE * Math.sin(startAngle + PULLBACK),
+      cx + r * Math.cos((startAngle + ANCHORFORWARD)),
+      cy + r * Math.sin((startAngle + ANCHORFORWARD)),
+      cx + r * ROUNDNESSINSIDE * Math.cos(startAngle + PULLBACK),
+      cy + r  * ROUNDNESSINSIDE * Math.sin(startAngle + PULLBACK),
+    );
+  }else{
+    //This is for the main arc of the pie chart
     p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
     p.onArc(
       undefined,
@@ -18,42 +37,7 @@ function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
       r,
       startAngle,
       startAngle + arcAngle,
-    );
-  } else {
-  //starting point of our chart
-  if(isBezian){
-    let ROUNDNESSOUSIDE = 1 - ((r - innerRadius)/ innerRadius) - (arcAngle * .5);
-    let ROUNDNESSINSIDE = 1 + ((r - innerRadius)/ innerRadius) + (arcAngle * .5);
-    const PULLBACK = 0.05;
-    const ANCHORFORWARD = .2 ;
-      //This is for the part that is the divider
-      p.moveTo(cx + r * ROUNDNESSOUSIDE * Math.cos(startAngle + PULLBACK), cy + r * ROUNDNESSOUSIDE * Math.sin(startAngle + PULLBACK));
-      p.onBezierCurve(
-        undefined,
-        undefined,
-        cx + r  * ROUNDNESSOUSIDE * Math.cos(startAngle + PULLBACK),
-        cy + r  * ROUNDNESSOUSIDE * Math.sin(startAngle + PULLBACK),
-        cx + r * Math.cos((startAngle + ANCHORFORWARD)),
-        cy + r * Math.sin((startAngle + ANCHORFORWARD)),
-        cx + r * ROUNDNESSINSIDE * Math.cos(startAngle + PULLBACK),
-        cy + r  * ROUNDNESSINSIDE * Math.sin(startAngle + PULLBACK),
-      );
-    }else{
-      //This is for the main arc of the pie chart
-      p.moveTo(cx + r * Math.cos(startAngle), cy + r * Math.sin(startAngle));
-      p.onArc(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        cx,
-        cy,
-        r,
-        r,
-        startAngle,
-        startAngle + arcAngle,
-      )
-    }
+    )
   }
   return p;
 }
@@ -201,7 +185,11 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
           backgroundColor={backgroundColor}
           visible={shouldShowRoundDividers}
         />
-        <CleanUpCircles dimensions={dimensions} backgroundColor={backgroundColor} visible={shouldShowRoundDividers}/>
+        <CleanUpCircles 
+          dimensions={dimensions} 
+          backgroundColor={backgroundColor} 
+          visible={shouldShowRoundDividers}
+        />
       </Group>
     </Surface>
   );
