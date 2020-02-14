@@ -102,7 +102,7 @@ const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }
     paintedSections.forEach((section, index) => {
       const { color, startAngle } = section;
       
-      for(let i = 0; i < (dividerSize * 2) + 2; i++){
+      for(let i = 0; i < dividerSize + 2; i++){
         dividerArray.push(<ArcShape
           key={index}
           dimensions={dimensions}
