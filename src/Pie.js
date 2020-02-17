@@ -42,8 +42,8 @@ function createPath(cx, cy, r, startAngle, arcAngle, isBezian, innerRadius) {
   return p;
 }
 
-const ArcShape = ({dim, color, strokeCap, startAngle, arcAngle, isBezian}) => {
-  const {radius, innerRadius, width, dividerSize} = dim;
+const ArcShape = ({dimensions, color, strokeCap, startAngle, arcAngle, isBezian}) => {
+  const {radius, innerRadius, width, dividerSize} = dimensions;
   const path = createPath(
     radius,
     radius,
@@ -58,16 +58,16 @@ const ArcShape = ({dim, color, strokeCap, startAngle, arcAngle, isBezian}) => {
 };
 
 //The initial band to set the backgroundColor behind the pie chart
-const Background = ({dim, color}) => {
-  return <ArcShape dim={dim} color={color} startAngle={0} arcAngle={360} />
+const Background = ({dimensions, color}) => {
+  return <ArcShape dimensions={dimensions} color={color} startAngle={0} arcAngle={360} />
 }
 
 const getArcAngle = (percentage) => percentage / 100 * 360;
 const shouldShowDivider = (sections, dividerSize) => sections.length > 1 && !Number.isNaN(dividerSize);
 
-const Sections = ({dim, paintedSections, sections, shouldShowRoundDividers, strokeCapForLargeBands}) => {
+const Sections = ({dimensions, paintedSections, sections, shouldShowRoundDividers, strokeCapForLargeBands}) => {
   let startValue = 0;
-  const {radius, width, dividerSize} = dim;
+  const {radius, width, dividerSize} = dimensions;
   const showDividers = shouldShowDivider(sections, dividerSize);
   paintedSections = sections.map((section, idx) => {
     const { percentage, color } = section;
@@ -77,7 +77,7 @@ const Sections = ({dim, paintedSections, sections, shouldShowRoundDividers, stro
     shouldShowRoundDividers && paintedSections.push({ percentage, color, startAngle, arcAngle });
     return <ArcShape
       key={idx}
-      dim={dim}
+      dimensions={dimensions}
       color={color}
       startAngle={showDividers ? startAngle + dividerSize : startAngle}
       arcAngle={showDividers ? arcAngle - dividerSize : arcAngle}
@@ -89,8 +89,8 @@ const Sections = ({dim, paintedSections, sections, shouldShowRoundDividers, stro
 
 
 // These are the rounded dividers when strokeCap='round'
-const RoundDividers = ({ dim, paintedSections, backgroundColor, visible }) => {
-  let {dividerSize, radius, innerRadius, width} = dim;
+const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }) => {
+  let {dividerSize, radius, innerRadius, width} = dimensions;
   let dividerOffSet = (dividerSize * 2) + 6;
   let strokeCap = 'butt';
   let isBezian = true;
@@ -105,7 +105,7 @@ const RoundDividers = ({ dim, paintedSections, backgroundColor, visible }) => {
       for(let i = 0; i < dividerSize + 2; i++){
         dividerArray.push(<ArcShape
           key={index}
-          dim={dim}
+          dimensions={dimensions}
           color={backgroundColor}
           startAngle={startAngle + section.arcAngle + dividerSize + i - dividerOffSet}
           arcAngle={1}
@@ -114,7 +114,7 @@ const RoundDividers = ({ dim, paintedSections, backgroundColor, visible }) => {
         />);
         dividerColorOverlayArray.push(<ArcShape
           key={index}
-          dim={dim}
+          dimensions={dimensions}
           color={color}
           startAngle={startAngle + section.arcAngle - dividerSize + i - dividerOffSet}
           arcAngle={1}
@@ -134,8 +134,8 @@ const RoundDividers = ({ dim, paintedSections, backgroundColor, visible }) => {
 };
 
 // These circles clean up the strokes left over from the bezian curves
-const CleanUpCircles = ({dim, backgroundColor, visible}) => {
-  const { radius, innerRadius, width} = dim;
+const CleanUpCircles = ({dimensions, backgroundColor, visible}) => {
+  const { radius, innerRadius, width} = dimensions;
   const innerBackgroundPath = createPath(radius, radius, innerRadius - ((width) / 2), 0, 360);
   const outerBackgroundPath = createPath(radius, radius, radius + ((width)) / 2, 0, 360);
   if((width) < 100 && visible){
@@ -162,31 +162,27 @@ const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, divide
   
   // This is the width for the arc
   const width = radius - innerRadius;
-  const dim = {
-    radius: radius,
-    innerRadius: innerRadius,
-    width: width,
-    dividerSize: dividerSize,
-  }
+  const dimensions = { radius, innerRadius, width, dividerSize };
+  
   return (
     <Surface width={radius * 2} height={radius * 2}>
       <Group rotation={-90} originX={radius} originY={radius}>
-        <Background dim={dim} color={backgroundColor} />
+        <Background dimensions={dimensions} color={backgroundColor} />
         <Sections 
-          dim={dim} 
+          dimensions={dimensions} 
           paintedSections={paintedSections} 
           sections={sections} 
           strokeCapForLargeBands={strokeCapForLargeBands} 
           shouldShowRoundDividers={shouldShowRoundDividers} 
         />
         <RoundDividers 
-          dim={dim}
+          dimensions={dimensions}
           paintedSections={paintedSections}
           backgroundColor={backgroundColor}
           visible={shouldShowRoundDividers}
         />
         <CleanUpCircles 
-          dim={dim} 
+          dimensions={dimensions} 
           backgroundColor={backgroundColor} 
           visible={shouldShowRoundDividers}
         />
