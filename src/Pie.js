@@ -90,10 +90,10 @@ const Sections = ({dimensions, paintedSections, sections, shouldShowRoundDivider
 
 // These are the rounded dividers when strokeCap='round'
 const RoundDividers = ({ dimensions, paintedSections, backgroundColor, visible }) => {
-  let {dividerSize, radius, innerRadius, width} = dimensions;
-  let dividerOffSet = (dividerSize * 2) + 6;
-  let strokeCap = 'butt';
-  let isBezian = true;
+  const {dividerSize, radius, innerRadius, width} = dimensions;
+  const dividerOffSet = (dividerSize * 2) + 6;
+  const strokeCap = 'butt';
+  const isBezian = true;
   let dividerColorOverlayArray = [];
   let dividerArray = [];
   
