@@ -138,7 +138,7 @@ const CleanUpCircles = ({dimensions, backgroundColor, visible}) => {
   const { radius, innerRadius, width} = dimensions;
   const innerBackgroundPath = createPath(radius, radius, innerRadius - ((width) / 2), 0, 360);
   const outerBackgroundPath = createPath(radius, radius, radius + ((width)) / 2, 0, 360);
-  if((width) < 100 && visible){
+  if((width) > 100 && visible){
     return (<>
       <Shape
           d={innerBackgroundPath}
@@ -156,7 +156,7 @@ const CleanUpCircles = ({dimensions, backgroundColor, visible}) => {
 }
 
 const Pie = ({ sections, radius, innerRadius, backgroundColor, strokeCap, dividerSize }) => {
-  strokeCapForLargeBands = dividerSize > 0 || strokeCap == 'butt' ? 'butt' : 'butt';
+  strokeCapForLargeBands = dividerSize > 0 || strokeCap == 'butt' ? 'butt' : 'round';
   const shouldShowRoundDividers = strokeCap === 'round';
   let paintedSections = [];
   
